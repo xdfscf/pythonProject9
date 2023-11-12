@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/admin.css') }}">
+    <title>Bookstore Management</title>
+</head>
+<body>
+    <div class="container">
+        <div class="toggle-buttons">
+            <button onclick="toggleForm('restockForm')">Restock</button>
+            <button onclick="toggleForm('createBookForm')">Create New Book</button>
+        </div>
+
+        <form id="restockForm" method="post" action="{{ url_for('admin') }}">
+            {{ restock_form.hidden_tag() }}
+            <h2>Restock</h2>
+            {{ restock_form.csrf_token }}
+            {{ restock_form.bookstore.label }} {{ restock_form.bookstore }}
+            {{ restock_form.book.label }} {{ restock_form.book }}
+            {{ restock_form.block_number.label }} {{ restock_form.block_number }}
+            {{ restock_form.available_capacity.label }} {{ restock_form.available_capacity }}
+            {{ restock_form.quantity.label }} {{ restock_form.quantity }}
+            {{ restock_form.submit_restock }}
+        </form>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script>
+            function myfunction ()
+            {
+
+                    // Make an AJAX request to fetch data based on the selected value
+                    $.ajax({
+                        type: 'GET',
+                        url: '/api/search_block/'+$('#book').val().replace(/ /g, "_")+'/'+$('#bookstore').val().replace(/ /g, "_"),
+                        data: {},
+                        success: function (data) {
+
+                            $('#block_number').empty();
+                            // Update the form with the received data
+                            data.forEach(function(item) {
+                            $('#block_number').append(
+                                $('<option>', {
+                                    value: item[0],
+                                    text: item[1]
+                                })
+                            );
+                        })}
+                    });
+            }
+            $(document).ready(function () {
+                // Add event listeners to relevant fields
+                $('#book').on('change', myfunction);
+            });
+            $(document).ready(function () {
+                // Add event listeners to relevant fields
+                $('#bookstore').on('change', myfunction);
+            });
+            $(document).ready(function () {
+                // Add event listeners to relevant fields
+                $('#block_number').on('change', function (){
+                    $('#available_capacity').innerHTML=$('#block_number').val();
+                });
+            });
+        </script>
+        <form id="createBookForm" method="post" action="{{ url_for('admin') }}" style="display: none;">
+            {{ create_book_form.hidden_tag() }}
+            <h2>Create New Book</h2>
+            {{ create_book_form.csrf_token }}
+            {{ create_book_form.author.label }} {{ create_book_form.author }}
+            {{ create_book_form.book_name.label }} {{ create_book_form.book_name }}
+            {{ create_book_form.edition.label }} {{ create_book_form.edition }}
+            {{ create_book_form.genre.label }} {{ create_book_form.genre }}
+            {{ create_book_form.publisher.label }} {{ create_book_form.publisher }}
+            {{ create_book_form.submit_create_book }}
+        </form>
+    </div>
+
+    <script src="{{ url_for('static', filename='/js/admin.js') }}"></script>
+</body>
+</html>

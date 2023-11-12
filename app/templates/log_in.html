@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Login</title>
+</head>
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/register.css') }}" type="text/css">
+<script src="{{ url_for('static', filename='/js/register.js') }}"></script>
+<body>
+    <h1>User Login</h1>
+    {% if message %}
+        <div>
+           <span style="color: red;"> {{ message }}</span>
+        </div>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login') }}">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.user_name.label }}
+            {{ form.user_name(placeholder="Enter your username") }}
+        </div>
+        <div>
+            {{ form.password.label }}
+            {{ form.password(placeholder="Enter your password") }}
+        </div>
+        <div>
+            <button type="submit">Login</button>
+        </div>
+    </form>
+</body>
+</html>

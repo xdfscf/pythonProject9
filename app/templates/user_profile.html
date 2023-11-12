@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Profile</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/user_profile.css') }}" type="text/css">
+<body>
+    <h1>User Profile</h1>
+
+    <!-- User Profile Section -->
+    <div id="user-profile">
+        <h2>User Information</h2>
+        <p>User Name: <span id="user-name">{{user.customer_name}}</span></p>
+        <p>User ID: <span id="user-id">{{user.customer_id}}</span></p>
+        <p>User Address: <span id="user-address">{{user.street_number}} {{user.street_address}} {{user.town}} {{user.state}} {{user.zip_code}}</span> <button onclick="editAddress()">Edit</button></p>
+    </div>
+
+    <!-- Orders Section -->
+    <div id="user-orders">
+        <h2>Orders</h2>
+        <ul>
+            <li>
+                Order ID: <span>1</span>
+                Order Date: <span>2023-01-15</span>
+                <button onclick="showOrderDetails(1)">Details</button>
+            </li>
+            <li>
+                Order ID: <span>2</span>
+                Order Date: <span>2023-02-20</span>
+                <button onclick="showOrderDetails(2)">Details</button>
+            </li>
+            <!-- Add more orders as needed -->
+        </ul>
+    </div>
+
+    <!-- Order Details Section (hidden by default) -->
+    <div id="order-details" style="display: none;">
+        <h2>Order Details</h2>
+        <p>Order ID: <span id="order-id-details"></span></p>
+        <p>Order Date: <span id="order-date-details"></span></p>
+        <ul>
+            <li>Order Line Item: Item 1</li>
+            <li>Order Line Item: Item 2</li>
+            <!-- Add more line items as needed -->
+        </ul>
+    </div>
+    <h3>Log out</h3>
+    <script>
+        // Function to handle editing the user's address
+        function editAddress() {
+            // Implement address editing logic here
+            alert("Edit Address clicked");
+        }
+
+        // Function to show order details
+        function showOrderDetails(orderId) {
+            // Implement order details retrieval and display logic here
+            document.getElementById('order-id-details').textContent = orderId;
+            document.getElementById('order-date-details').textContent = "Date of Order " + orderId;
+
+            // Display the order details section
+            document.getElementById('order-details').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

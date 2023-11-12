@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Example</title>
+</head>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='/css/search.css') }}" type="text/css">
+
+<body>
+
+    <div class="search_and_register_container">
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-bar" placeholder="Search for a book">
+            <ul id="searchResults" class="search-results"></ul>
+        </div>
+        {% if not show_icon %}
+        <div display="inline" class="register">
+            <button class="big_button" id="register_button">register</button>
+            <button class="big_button" id="login_button">log in</button>
+        </div>
+        <script>
+            document.getElementById("register_button").addEventListener("click", function() {
+            // Replace the URL below with the one you want to visit
+            var urlToVisit = "/register";
+            window.location.href = urlToVisit;
+         });
+            document.getElementById("login_button").addEventListener("click", function() {
+                // Replace the URL below with the one you want to visit
+                var urlToVisit = "/login";
+                window.location.href = urlToVisit;
+        });
+        </script>
+        {% endif %}
+        {% if show_icon %}
+        <div display="inline" class="register">
+            <button class="profile-button" id="profile_button">{{user_name[0]}}</button>
+        </div>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("profile_button").addEventListener("click", function() {
+                    // Replace the URL below with the one you want to visit
+                    var urlToVisit = "/user_profile";
+                    window.location.href = urlToVisit;
+                });
+            });
+        </script>
+        {% endif %}
+    </div>
+    {% for book in books %}
+    <div class="boxtitle" id="book_title">{{book.book_name}}</div>
+    <div class="box">
+                <ul class="list">
+                <li class="col2">
+                    <div class="l"><a href="/book/722152/"><img src="{{ url_for('static', filename=book.img_link) }}" alt={{book.book_name}} width="82" height="114" /></a></div>
+                    <div>
+                        <div class="container1">
+                            <div class="container2">
+                                <ul>
+                                    <li>AUTHOR:  <a class='link1 author' href="{{ url_for('search_result', type='author', keyword=book.author) }}">   {{book.author}}</a> </li>
+
+                                         <li class="genre_li"> GENRE:</li>
+                                     {% for genres in book.genres %}
+                                         <li class="genre_li"><a class='link1' href="{{ url_for('search_result', type='genre', keyword=genres) }}"  >{{genres}}  |</a> </li>
+                                     {% endfor %}
+
+                                </ul>
+                            </div>
+                            <div class="purchase-container">
+                                 {% if show_icon %}
+                                 <div class="counter-container">
+                                    <button class="counter-button minus" onclick="decrementCounter()">-</button>
+                                    <div class="counter-number" id="count">0</div>
+                                    <button class="counter-button plus" onclick="incrementCounter()">+</button>
+                                </div>
+                                <button class="purchase-button" onclick="purchaseItem()">Purchase</button>
+                                <script>
+                                    function purchaseItem() {
+                                        let a = document.getElementById("count").innerHTML;
+                                        let b = document.getElementById("stock").innerHTML;
+                                        if (a > b) {
+                                            alert("purchase number shouldn't be great than the stock number")
+                                        }
+                                        else if(a!=0){
+                                            let c=document.getElementById("book_title").innerHTML;
+                                            const apiUrl = `/api/order/`+ c +'/' + a;
+
+                                            fetch(apiUrl)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    document.getElementById("stock").innerHTML= b - a;
+                                                })
+                                                .catch(error => {
+                                                    console.error("Error fetching data: " + error);
+                                                });
+                                        }
+                                    }
+                                </script>
+                                {% endif %}
+                                <h4 class="stock1">Stock :</h4><h4 class="stock1" id="stock">{{book.total_in_stock}}</h4>
+
+                            </div>
+                        </div>
+                        <div class="summary">{{book.descriptions}}</div>
+                    </div>
+                </li>
+    </ul></div>
+    {% endfor %}
+    <script src="{{ url_for('static', filename='/js/search.js') }}"></script>
+</body>
+</html>
